@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>You Are My Universe ✨</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #0b1d3a, #000010);
+  color: #ffffff;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+section {
+  padding: 70px 20px;
+}
+
+h1, h2 {
+  color: #ffd6ff;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
+  box-shadow: 0 0 30px rgba(255,255,255,0.15);
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.gallery img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+.star {
+  position: fixed;
+  top: -10px;
+  color: white;
+  font-size: 14px;
+  animation: fall 8s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(120vh); }
+}
+
+button {
+  padding: 14px 30px;
+  border: none;
+  border-radius: 30px;
+  background: #ff6bd6;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff3dc5;
+}
+
+input {
+  padding: 12px;
+  border-radius: 20px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+  width: 220px;
+}
+
+audio {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Music -->
+<audio autoplay loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<section>
+  <h1>🌌 Happy Valentine’s Day 🌌</h1>
+  <h2>Babushankar</h2>
+  <p>You are my calm in this universe</p>
+</section>
+
+<section>
+  <div class="card">
+    <h2>💌 My Love Letter</h2>
+    <p>
+      Hey Bava,<br><br>
+      Among billions of stars, somehow my heart found you.
+      You didn’t come loudly into my life —
+      you came calmly, comfortably, softly.
+      And without realizing it,
+      I loved you from the very first sight.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>✨ Our Little Memories</h2>
+    <p><b>Feb 13</b> — Our company gathering.<br>
+    You wore a green jacket.<br>
+    We danced together… and my universe shifted.</p><br>
+
+    <p>I loved you at first sight.<br>
+    Then I tried to step back.<br>
+    But I could never be angry with you.</p><br>
+
+    <p>We chose friendship.<br>
+    Chats, calls, photos.<br>
+    Slowly… you became my safe place.</p><br>
+
+    <p>You came to me in the office.<br>
+    I waited for you at Nandham Metro.<br>
+    Walks to work. Talks at Guindy.<br>
+    Simple moments — forever memories.</p><br>
+
+    <p>I confessed my feelings.<br>
+    You said you weren’t ready.</p><br>
+
+    <p>So I waited.<br>
+    I prayed to Lord Siva 🕉️ —<br>
+    not to change you,<br>
+    but to protect what I felt.</p><br>
+
+    <p><b>Oct 7</b> — You said yes.<br>
+    You said:<br>
+    <i>“I won’t be without you…”</i></p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>📸 Our Universe</h2>
+    <div class="gallery">
+      <img src="photo1.jpg">
+      <img src="photo2.jpg">
+      <img src="photo3.jpg">
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>🔐 A Secret Just for You</h2>
+    <p>Enter our code word 💖</p>
+
+    <input id="password" placeholder="Our code word…">
+    <br><br>
+
+    <button onclick="unlockLove()">Unlock ✨</button>
+    <p id="error" style="color:red;"></p>
+
+    <p id="secretLove" style="
+      display:none;
+      margin-top:25px;
+      font-size:20px;
+      color:#ff9ee7;
+      line-height:1.7;">
+      Babushankar ❤️<br><br>
+      From waiting to praying,<br>
+      from silence to love —<br>
+      we made it together.<br><br>
+
+      I’m yours.<br>
+      You’re mine.<br>
+      Forever ♾️<br><br>
+
+      Bava… this is our universe 🌌
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <h2>💫 Forever</h2>
+    <button onclick="alert('You are my universe, Babushankar ❤️\\nForever yours,\\nVarsha Babushankar')">
+      Tap here 💖
+    </button>
+  </div>
+</section>
+
+<script>
+function createStar() {
+  const star = document.createElement("div");
+  star.classList.add("star");
+  star.innerHTML = "✨";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.animationDuration = (5 + Math.random() * 5) + "s";
+  document.body.appendChild(star);
+  setTimeout(() => star.remove(), 8000);
+}
+setInterval(createStar, 300);
+
+function unlockLove() {
+  const pass = document.getElementById("password").value;
+  if (pass.toLowerCase() === "bava") {
+    document.getElementById("secretLove").style.display = "block";
+    document.getElementById("error").innerText = "";
+  } else {
+    document.getElementById("error").innerText = "Wrong code 💔 Try again";
+  }
+}
+</script>
+
+</body>
+</html>
