@@ -82,17 +82,13 @@ input {
   font-size: 16px;
   width: 220px;
 }
-
-audio {
-  display: none;
-}
 </style>
 </head>
 
 <body>
 
 <!-- Background Music -->
-<audio autoplay loop>
+<audio id="bgMusic" loop>
   <source src="song.mp3" type="audio/mpeg">
 </audio>
 
@@ -100,6 +96,9 @@ audio {
   <h1>🌌 Happy Valentine’s Day 🌌</h1>
   <h2>Babushankar</h2>
   <p>You are my calm in this universe</p>
+
+  <br>
+  <button onclick="playMusic()">🎶 Play Our Song</button>
 </section>
 
 <section>
@@ -119,34 +118,16 @@ audio {
 <section>
   <div class="card">
     <h2>✨ Our Little Memories</h2>
-    <p><b>Feb 13</b> — Our company gathering.<br>
-    You wore a green jacket.<br>
-    We danced together… and my universe shifted.</p><br>
+    <p><b>Feb 13</b> — Company gathering.<br>
+    Green jacket. Dancing together.<br>
+    My universe shifted.</p>
 
-    <p>I loved you at first sight.<br>
-    Then I tried to step back.<br>
-    But I could never be angry with you.</p><br>
+    <p>Friendship → chats → calls → photos.</p>
+    <p>Metro waits. Office walks. Guindy talks.</p>
 
-    <p>We chose friendship.<br>
-    Chats, calls, photos.<br>
-    Slowly… you became my safe place.</p><br>
+    <p>I prayed to Lord Siva 🕉️</p>
 
-    <p>You came to me in the office.<br>
-    I waited for you at Nandham Metro.<br>
-    Walks to work. Talks at Guindy.<br>
-    Simple moments — forever memories.</p><br>
-
-    <p>I confessed my feelings.<br>
-    You said you weren’t ready.</p><br>
-
-    <p>So I waited.<br>
-    I prayed to Lord Siva 🕉️ —<br>
-    not to change you,<br>
-    but to protect what I felt.</p><br>
-
-    <p><b>Oct 7</b> — You said yes.<br>
-    You said:<br>
-    <i>“I won’t be without you…”</i></p>
+    <p><b>Oct 7</b> — <i>“I won’t be without you…”</i></p>
   </div>
 </section>
 
@@ -154,8 +135,8 @@ audio {
   <div class="card">
     <h2>📸 Our Universe</h2>
     <div class="gallery">
-      <img src="photo1.jpg">
-      <img src="photo2.jpg">
+      <img src="photo1.jpg" alt="Us">
+      <img src="photo2.jpg" alt="Us">
     </div>
   </div>
 </section>
@@ -171,54 +152,37 @@ audio {
     <button onclick="unlockLove()">Unlock ✨</button>
     <p id="error" style="color:red;"></p>
 
-    <p id="secretLove" style="
-      display:none;
-      margin-top:25px;
-      font-size:20px;
-      color:#ff9ee7;
-      line-height:1.7;">
+    <p id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
       Babushankar ❤️<br><br>
-      From waiting to praying,<br>
-      from silence to love —<br>
-      we made it together.<br><br>
-
       I’m yours.<br>
       You’re mine.<br>
-      Forever ♾️<br><br>
-
-      Bava… this is our universe 🌌
+      Forever ♾️
     </p>
   </div>
 </section>
 
-<section>
-  <div class="card">
-    <h2>💫 Forever</h2>
-    <button onclick="alert('You are my universe, Babushankar ❤️\\nForever yours,\\nVarsha Babushankar')">
-      Tap here 💖
-    </button>
-  </div>
-</section>
-
 <script>
+function playMusic() {
+  document.getElementById("bgMusic").play();
+}
+
 function createStar() {
   const star = document.createElement("div");
-  star.classList.add("star");
+  star.className = "star";
   star.innerHTML = "✨";
   star.style.left = Math.random() * 100 + "vw";
-  star.style.animationDuration = (5 + Math.random() * 5) + "s";
   document.body.appendChild(star);
   setTimeout(() => star.remove(), 8000);
 }
 setInterval(createStar, 300);
 
 function unlockLove() {
-  const pass = document.getElementById("password").value;
-  if (pass.toLowerCase() === "bava") {
+  const pass = document.getElementById("password").value.toLowerCase();
+  if (pass === "bava") {
     document.getElementById("secretLove").style.display = "block";
     document.getElementById("error").innerText = "";
   } else {
-    document.getElementById("error").innerText = "Wrong code 💔 Try again";
+    document.getElementById("error").innerText = "Wrong code 💔";
   }
 }
 </script>
