@@ -6,173 +6,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root {
+    --primary-pink: #ff6bd6;
+    --deep-space: #000010;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #0b1d3a, #000010);
+  background: radial-gradient(circle at top, #0b1d3a, var(--deep-space));
   color: #ffffff;
   text-align: center;
   overflow-x: hidden;
+  cursor: none; /* Custom cursor handling */
 }
 
 #overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: #000010;
+  background: var(--deep-space);
   z-index: 9999;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.8s ease;
 }
 
-#overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
+#overlay.hidden { opacity: 0; pointer-events: none; }
 
-section { padding: 70px 20px; }
-h1, h2 { color: #ffd6ff; }
+section { padding: 80px 20px; }
+h1, h2 { color: #ffd6ff; text-shadow: 0 0 10px rgba(255, 214, 255, 0.3); }
 
+/* Interactive Cards */
 .card {
   background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  padding: 30px;
-  max-width: 900px;
+  backdrop-filter: blur(12px);
+  border-radius: 25px;
+  padding: 40px;
+  max-width: 800px;
   margin: auto;
-  box-shadow: 0 0 30px rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
 }
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 107, 214, 0.2);
 }
 
 .gallery img {
   width: 100%;
   border-radius: 20px;
+  transition: transform 0.5s ease;
+  filter: grayscale(20%);
 }
 
-/* Chorus Dedication Toast */
+.gallery img:hover {
+  transform: scale(1.05) rotate(2deg);
+  filter: grayscale(0%);
+}
+
+/* Heart Particles */
+.heart-particle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 20px;
+  animation: floatUp 1.5s ease-out forwards;
+  z-index: 9998;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+}
+
+/* Astronaut Space Pet */
+#astronaut {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 9997;
+  transition: top 0.2s ease-out, left 0.2s ease-out;
+  filter: drop-shadow(0 0 5px white);
+}
+
 #toast {
   position: fixed;
   bottom: -100px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 107, 214, 0.9);
+  background: var(--primary-pink);
   color: white;
-  padding: 15px 30px;
+  padding: 15px 35px;
   border-radius: 50px;
   font-weight: bold;
-  box-shadow: 0 0 20px rgba(255, 107, 214, 0.5);
   transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 10000;
 }
-
 #toast.show { bottom: 40px; }
 
-.star {
-  position: fixed;
-  top: -10px;
-  color: white;
-  font-size: 14px;
-  animation: fall 8s linear infinite;
-  opacity: 0.8;
-  z-index: -1;
-}
-
-@keyframes fall {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(120vh); }
-}
-
 button {
-  padding: 14px 30px;
+  padding: 15px 35px;
   border: none;
-  border-radius: 30px;
-  background: #ff6bd6;
+  border-radius: 35px;
+  background: var(--primary-pink);
   color: white;
-  font-size: 17px;
+  font-weight: bold;
   cursor: pointer;
-  margin: 8px;
+  margin: 10px;
+  transition: 0.3s;
 }
+button:hover { background: #ff3dc5; transform: scale(1.1); }
 
-button:hover { background: #ff3dc5; transform: scale(1.05); }
-
-/* Hidden YouTube Player */
-#youtube-player { position: absolute; top: -9999px; left: -9999px; }
+#youtube-player { position: absolute; top: -999px; }
 </style>
 </head>
 
 <body>
 
 <div id="overlay">
-  <h1 style="color:#ffd6ff;">🌌 Our Universe</h1>
-  <p>Ready to see our story?</p>
-  <button id="enterBtn" onclick="startExperience()">✨ Enter ✨</button>
+  <h1>🌌 Our Universe</h1>
+  <button onclick="startExperience()">✨ Enter ✨</button>
 </div>
 
 <div id="toast">🎵 "I just wanna be yours..." ❤️</div>
-
+<div id="astronaut">🧑‍🚀</div>
 <div id="youtube-player"></div>
 
 <section>
-  <h1>🌌 Happy Valentine’s Day 🌌</h1>
-  <h2>Babushankar</h2>
-  <p>You are my calm in this universe</p>
-  <button onclick="toggleMusic()" id="musicToggle">🎵 Loading Song...</button>
+  <h1 style="font-size: 3rem;">🌌 Happy Valentine’s Day 🌌</h1>
+  <h2 style="font-size: 2rem;">Babushankar</h2>
+  <button onclick="toggleMusic()" id="musicToggle">🎵 Loading Music...</button>
 </section>
 
 <section>
   <div class="card">
     <h2>💌 My Love Letter</h2>
-    <p>
-      Hey Bava,<br><br>
-      Among billions of stars, somehow my heart found you.
-      You came calmly, comfortably, softly.
-      And without realizing it,
-      I loved you from the very first sight.
-    </p>
+    <p>Among billions of stars, my heart found you. You are my home, my comfort, and my favorite version of the universe. ❤️</p>
   </div>
 </section>
 
 <section>
   <div class="card">
-    <h2>📸 Our Universe</h2>
     <div class="gallery">
-      <img src="loves1.jpeg" alt="Memory 1">
-      <img src="loves2.jpeg" alt="Memory 2">
+      <img src="loves1.jpeg" alt="Us 1">
+      <img src="loves2.jpeg" alt="Us 2">
     </div>
   </div>
 </section>
 
-<section>
+<section id="quiz-section">
   <div class="card">
     <h2>💖 How Well Do You Know Us?</h2>
-    <p id="question"></p>
+    <p id="question">Loading quiz...</p>
     <div id="answers"></div>
-    <p id="quizResult"></p>
+    <p id="quizResult" style="height: 20px; margin-top: 10px;"></p>
   </div>
 </section>
 
 <section>
   <div class="card">
-    <h2>🔐 A Secret Just for You</h2>
-    <input id="password" placeholder="Our code word…" style="padding:12px; border-radius:20px; border:none; text-align:center;">
-    <br><br>
-    <button onclick="unlockLove()">Unlock ✨</button>
-    <p id="error" style="color:red;"></p>
-    <p id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
-      Babushankar ❤️<br><br>
-     If I had to live ten thousand lives.<br>
-      I would always choose you.<br>
-      Forever ♾️
-    </p>
+    <h2>🔐 Our Secret</h2>
+    <input id="password" placeholder="Code word..." style="padding:12px; border-radius:20px; border:none; color: #000;">
+    <button onclick="unlockLove()">Unlock</button>
+    <p id="secretLove" style="display:none; margin-top:20px; font-size: 22px;">Babushankar ❤️ Forever ♾️</p>
   </div>
 </section>
 
@@ -183,105 +184,102 @@ let player;
 let isPlayerReady = false;
 let toastShown = false;
 
-// 1. YT API calls this when ready to create player
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube-player', {
-    height: '0',
-    width: '0',
-    videoId: 'nyuo9-OjNNg', // Your provided Arctic Monkeys ID
-    playerVars: {
-      'autoplay': 0,
-      'loop': 1,
-      'playlist': 'nyuo9-OjNNg',
-      'controls': 0
-    },
+    height: '0', width: '0',
+    videoId: 'nyuo9-OjNNg',
+    playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'nyuo9-OjNNg' },
     events: {
       'onReady': () => {
         isPlayerReady = true;
-        document.getElementById("musicToggle").innerText = "🎵 Play/Pause Song";
-        console.log("YouTube Player is fully ready.");
-      },
-      'onStateChange': onPlayerStateChange
+        document.getElementById("musicToggle").innerText = "🎵 Pause Song";
+      }
     }
   });
 }
 
 function startExperience() {
-  // Reveal page immediately
   document.getElementById("overlay").classList.add('hidden');
-  
-  // Try playing the music once ready
   if (isPlayerReady) {
     player.playVideo();
-  } else {
-    // If not ready, wait and try every 200ms
-    let checkReady = setInterval(() => {
-      if (isPlayerReady) {
-        player.playVideo();
-        clearInterval(checkReady);
-      }
-    }, 200);
-  }
-}
-
-function onPlayerStateChange(event) {
-  // Monitor playback for the chorus
-  if (event.data === YT.PlayerState.PLAYING) {
-    setInterval(checkChorusTime, 1000);
+    // 200ms polling for "resilient" caption timing
+    setInterval(checkChorusTime, 200); 
   }
 }
 
 function checkChorusTime() {
-  if (player && typeof player.getCurrentTime === 'function' && !toastShown) {
+  if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
     const time = player.getCurrentTime();
-    // Chorus starts roughly at 40-45 seconds
-    if (time >= 44 && time < 55) {
-      showToast();
+    // Syncing to the specific line "I just wanna be yours"
+    if (time >= 42.8 && time < 49 && !toastShown) {
+      document.getElementById("toast").classList.add("show");
       toastShown = true;
+      setTimeout(() => document.getElementById("toast").classList.remove("show"), 6000);
     }
   }
-}
-
-function showToast() {
-  const toast = document.getElementById("toast");
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 6000);
 }
 
 function toggleMusic() {
-  // Safety check for your TypeError
   if (player && typeof player.getPlayerState === 'function') {
     const state = player.getPlayerState();
-    if (state === YT.PlayerState.PLAYING) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
+    state === 1 ? player.pauseVideo() : player.playVideo();
   }
 }
 
-/* Star Background logic */
-function createStar() {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.innerHTML = "✨";
-  star.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(star);
-  setTimeout(() => star.remove(), 8000);
-}
-setInterval(createStar, 300);
+/* 🖱️ Interaction: Floating Hearts & Astronaut */
+document.addEventListener('mousemove', (e) => {
+  // Move Astronaut
+  const astro = document.getElementById("astronaut");
+  astro.style.left = (e.clientX + 20) + "px";
+  astro.style.top = (e.clientY + 20) + "px";
 
-/* Secret & Quiz logic (Copy/Paste your existing functions here) */
+  // Create Heart Trail
+  if (Math.random() > 0.8) {
+    const heart = document.createElement("div");
+    heart.className = "heart-particle";
+    heart.innerHTML = "❤️";
+    heart.style.left = e.pageX + "px";
+    heart.style.top = e.pageY + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+  }
+});
+
+/* 📝 Quiz Logic */
+const quizData = [
+  { q: "Where did we first meet? 💫", options: ["Office gathering", "Metro", "Online"], answer: "Office gathering" },
+  { q: "When did it happen? 📅", options: ["Feb 14", "Feb 18", "March 1"], answer: "Feb 18" },
+  { q: "Babushankar’s cutest habit? 🥰", options: ["Being silent", "Saying yes to me", "Always smiling"], answer: "Saying yes to me" }
+];
+let qIndex = 0; let score = 0;
+
+function loadQuiz() {
+  const qEl = document.getElementById("question");
+  const aDiv = document.getElementById("answers");
+  if (qIndex >= quizData.length) {
+    qEl.innerHTML = `Score: ${score}/3 💖 You win my heart!`;
+    aDiv.innerHTML = ""; return;
+  }
+  const q = quizData[qIndex];
+  qEl.innerText = q.q; aDiv.innerHTML = "";
+  q.options.forEach(opt => {
+    const b = document.createElement("button");
+    b.innerText = opt; b.onclick = () => {
+      if(opt === q.answer) score++;
+      document.getElementById("quizResult").innerText = opt === q.answer ? "🥰" : "😘";
+      qIndex++; setTimeout(() => { document.getElementById("quizResult").innerText = ""; loadQuiz(); }, 800);
+    };
+    aDiv.appendChild(b);
+  });
+}
+
 function unlockLove() {
-  const pass = document.getElementById("password").value.toLowerCase();
-  if (pass === "bava") {
+  if (document.getElementById("password").value.toLowerCase() === "bava") {
     document.getElementById("secretLove").style.display = "block";
-    document.getElementById("error").innerText = "";
-  } else {
-    document.getElementById("error").innerText = "Wrong code 💔";
   }
 }
-</script>
 
+loadQuiz();
+</script>
 </body>
 </html>
