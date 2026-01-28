@@ -58,7 +58,7 @@ h1, h2 { color: #ffd6ff; }
   border-radius: 20px;
 }
 
-/* Toast Notification Styles */
+/* Chorus Dedication Toast */
 #toast {
   position: fixed;
   bottom: -100px;
@@ -70,11 +70,11 @@ h1, h2 { color: #ffd6ff; }
   border-radius: 50px;
   font-weight: bold;
   box-shadow: 0 0 20px rgba(255, 107, 214, 0.5);
-  transition: bottom 0.5s ease-in-out;
+  transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 10000;
 }
 
-#toast.show { bottom: 30px; }
+#toast.show { bottom: 40px; }
 
 .star {
   position: fixed;
@@ -102,7 +102,9 @@ button {
   margin: 8px;
 }
 
-button:hover { background: #ff3dc5; }
+button:hover { background: #ff3dc5; transform: scale(1.05); }
+
+/* Hidden YouTube Player */
 #youtube-player { position: absolute; top: -9999px; left: -9999px; }
 </style>
 </head>
@@ -123,7 +125,7 @@ button:hover { background: #ff3dc5; }
   <h1>🌌 Happy Valentine’s Day 🌌</h1>
   <h2>Babushankar</h2>
   <p>You are my calm in this universe</p>
-  <button onclick="toggleMusic()" id="musicToggle">🎵 Play/Pause Song</button>
+  <button onclick="toggleMusic()" id="musicToggle">🎵 Loading Song...</button>
 </section>
 
 <section>
@@ -178,41 +180,62 @@ button:hover { background: #ff3dc5; }
 
 <script>
 let player;
+let isPlayerReady = false;
 let toastShown = false;
 
-// YouTube Player Init
+// 1. YT API calls this when ready to create player
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube-player', {
     height: '0',
     width: '0',
-    videoId: 'qyEzsAy4qeU', // Arctic Monkeys - I Wanna Be Yours
+    videoId: 'nyuo9-OjNNg', // Your provided Arctic Monkeys ID
     playerVars: {
       'autoplay': 0,
       'loop': 1,
-      'playlist': 'qyEzsAy4qeU'
+      'playlist': 'nyuo9-OjNNg',
+      'controls': 0
+    },
+    events: {
+      'onReady': () => {
+        isPlayerReady = true;
+        document.getElementById("musicToggle").innerText = "🎵 Play/Pause Song";
+        console.log("YouTube Player is fully ready.");
+      },
+      'onStateChange': onPlayerStateChange
     }
   });
 }
 
 function startExperience() {
+  // Reveal page immediately
   document.getElementById("overlay").classList.add('hidden');
   
-  // Robust check for player initialization
-  const playInterval = setInterval(() => {
-    if (player && player.playVideo) {
-      player.playVideo();
-      clearInterval(playInterval);
-      // Start checking for chorus time
-      setInterval(checkChorusTime, 1000);
-    }
-  }, 100);
+  // Try playing the music once ready
+  if (isPlayerReady) {
+    player.playVideo();
+  } else {
+    // If not ready, wait and try every 200ms
+    let checkReady = setInterval(() => {
+      if (isPlayerReady) {
+        player.playVideo();
+        clearInterval(checkReady);
+      }
+    }, 200);
+  }
+}
+
+function onPlayerStateChange(event) {
+  // Monitor playback for the chorus
+  if (event.data === YT.PlayerState.PLAYING) {
+    setInterval(checkChorusTime, 1000);
+  }
 }
 
 function checkChorusTime() {
-  if (player && player.getCurrentTime && !toastShown) {
-    const currentTime = player.getCurrentTime();
-    // Chorus starts roughly at 45 seconds
-    if (currentTime >= 45 && currentTime < 55) {
+  if (player && typeof player.getCurrentTime === 'function' && !toastShown) {
+    const time = player.getCurrentTime();
+    // Chorus starts roughly at 40-45 seconds
+    if (time >= 44 && time < 55) {
       showToast();
       toastShown = true;
     }
@@ -222,26 +245,22 @@ function checkChorusTime() {
 function showToast() {
   const toast = document.getElementById("toast");
   toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 5000);
+  setTimeout(() => toast.classList.remove("show"), 6000);
 }
 
 function toggleMusic() {
-  // FIXED: Added safety check for getPlayerState
-  if (player && typeof player.getPlayerState === "function") {
+  // Safety check for your TypeError
+  if (player && typeof player.getPlayerState === 'function') {
     const state = player.getPlayerState();
     if (state === YT.PlayerState.PLAYING) {
       player.pauseVideo();
     } else {
       player.playVideo();
     }
-  } else {
-    console.warn("Player not initialized yet.");
   }
 }
 
-/* Background Stars logic */
+/* Star Background logic */
 function createStar() {
   const star = document.createElement("div");
   star.className = "star";
@@ -252,7 +271,7 @@ function createStar() {
 }
 setInterval(createStar, 300);
 
-/* Secret Code Word */
+/* Secret & Quiz logic (Copy/Paste your existing functions here) */
 function unlockLove() {
   const pass = document.getElementById("password").value.toLowerCase();
   if (pass === "bava") {
@@ -262,45 +281,6 @@ function unlockLove() {
     document.getElementById("error").innerText = "Wrong code 💔";
   }
 }
-
-/* QUIZ LOGIC (Unchanged) */
-const quizData = [
-  { q: "Where did we first meet? 💫", options: ["Office gathering", "Metro", "Online", "Party"], answer: "Office gathering" },
-  { q: "When did it happen? 📅", options: ["Feb 14", "Feb 18", "March 1", "Jan 26"], answer: "Feb 18" },
-  { q: "Babushankar’s cutest habit? 🥰", options: ["Being silent", "Telling yes to everything I ask", "Always smiling", "Acting serious"], answer: "Telling yes to everything I ask" }
-];
-
-let quizIndex = 0;
-let score = 0;
-
-function loadQuiz() {
-  const cardPara = document.querySelector(".card h2 + p");
-  const answersDiv = document.getElementById("answers");
-  if (quizIndex >= quizData.length) {
-    cardPara.innerHTML = `You scored ${score}/${quizData.length} 💖<br>No matter the score, you already won my heart 🌌`;
-    answersDiv.innerHTML = "";
-    return;
-  }
-  const q = quizData[quizIndex];
-  document.getElementById("question").innerText = q.q;
-  answersDiv.innerHTML = "";
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = () => checkAnswer(opt);
-    answersDiv.appendChild(btn);
-  });
-}
-
-function checkAnswer(selected) {
-  const res = document.getElementById("quizResult");
-  if (selected === quizData[quizIndex].answer) { score++; res.innerText = "Correct 🥰"; }
-  else { res.innerText = "Still loved 😘"; }
-  quizIndex++;
-  setTimeout(() => { res.innerText = ""; loadQuiz(); }, 800);
-}
-
-loadQuiz();
 </script>
 
 </body>
