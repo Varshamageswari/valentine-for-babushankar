@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* Reset and Base Styles */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -16,29 +15,27 @@ body {
   overflow-x: hidden;
 }
 
-/* Overlay for Audio Permission */
+/* Fail-safe overlay */
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #000010;
   z-index: 9999;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 1s ease-out;
+  transition: opacity 0.6s ease;
 }
 
-section {
-  padding: 70px 20px;
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
-h1, h2 {
-  color: #ffd6ff;
-}
+section { padding: 70px 20px; }
+h1, h2 { color: #ffd6ff; }
 
 .card {
   background: rgba(255,255,255,0.08);
@@ -60,7 +57,6 @@ h1, h2 {
 .gallery img {
   width: 100%;
   border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
 .star {
@@ -87,25 +83,17 @@ button {
   font-size: 17px;
   cursor: pointer;
   margin: 8px;
-  transition: 0.3s;
+  transition: transform 0.2s, background 0.2s;
 }
 
-button:hover {
-  background: #ff3dc5;
-  transform: scale(1.05);
-}
+button:hover { background: #ff3dc5; transform: scale(1.05); }
+button:active { transform: scale(0.95); }
 
-input {
-  padding: 12px;
-  border-radius: 20px;
-  border: none;
-  text-align: center;
-  font-size: 16px;
-  width: 220px;
-}
-
-#secretLove {
-    margin-top: 20px;
+/* Hidden YouTube Player */
+#youtube-player {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
 }
 </style>
 </head>
@@ -113,20 +101,18 @@ input {
 <body>
 
 <div id="overlay">
-  <h1 style="font-size: 2.5rem; margin-bottom: 20px;">🌌 Our Universe Is Waiting...</h1>
-  <p style="margin-bottom: 30px; font-size: 1.1rem; color: #ffd6ff;">Click to enter and hear our song</p>
-  <button onclick="startExperience()">✨ Enter ✨</button>
+  <h1 style="color:#ffd6ff;">🌌 Our Universe</h1>
+  <p>Ready to see our story?</p>
+  <button id="enterBtn" onclick="startExperience()">✨ Enter ✨</button>
 </div>
 
-<audio id="bgMusic" loop preload="auto">
-  <source src="song.mp3" type="audio/mpeg">
-</audio>
+<div id="youtube-player"></div>
 
 <section>
   <h1>🌌 Happy Valentine’s Day 🌌</h1>
   <h2>Babushankar</h2>
   <p>You are my calm in this universe</p>
-  <button onclick="toggleMusic()" id="musicBtn">🎵 Pause Song</button>
+  <button onclick="toggleMusic()" id="musicToggle">🎵 Play/Pause Song</button>
 </section>
 
 <section>
@@ -173,54 +159,66 @@ input {
 <section>
   <div class="card">
     <h2>🔐 A Secret Just for You</h2>
-    <input id="password" placeholder="Our code word…">
+    <input id="password" placeholder="Our code word…" style="padding:12px; border-radius:20px; border:none; text-align:center;">
     <br><br>
     <button onclick="unlockLove()">Unlock ✨</button>
     <p id="error" style="color:red;"></p>
 
-    <div id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
+    <p id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
       Babushankar ❤️<br><br>
       I choose you.<br>
       Every version of you.<br>
       Forever ♾️
-    </div>
+    </p>
   </div>
 </section>
 
-<script>
-const music = document.getElementById("bgMusic");
+<script src="https://www.youtube.com/iframe_api"></script>
 
-// Function to start music and hide overlay
-function startExperience() {
-  const overlay = document.getElementById("overlay");
-  
-  // Play music
-  music.play().then(() => {
-    // Hide overlay only if music starts
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 1000);
-  }).catch(error => {
-    console.log("Playback blocked:", error);
-    // Even if audio fails, we hide overlay so they can see the site
-    overlay.style.display = 'none';
+<script>
+let player;
+
+// Initialize YouTube Player
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('youtube-player', {
+    height: '0',
+    width: '0',
+    videoId: 'qyEzsAy4qeU', // Arctic Monkeys - I Wanna Be Yours
+    playerVars: {
+      'autoplay': 0,
+      'loop': 1,
+      'playlist': 'qyEzsAy4qeU'
+    },
+    events: {
+      'onReady': onPlayerReady
+    }
   });
 }
 
-// Manual toggle for music
-function toggleMusic() {
-  const btn = document.getElementById("musicBtn");
-  if (music.paused) {
-    music.play();
-    btn.innerText = "🎵 Pause Song";
-  } else {
-    music.pause();
-    btn.innerText = "🎶 Play Song";
+function onPlayerReady(event) {
+  console.log("YouTube Player is ready");
+}
+
+function startExperience() {
+  // 1. Instantly hide overlay
+  document.getElementById("overlay").classList.add('hidden');
+  
+  // 2. Play music if player is ready
+  if (player && player.playVideo) {
+    player.playVideo();
   }
 }
 
-/* Stars Background */
+function toggleMusic() {
+  const state = player.getPlayerState();
+  if (state === YT.PlayerState.PLAYING) {
+    player.pauseVideo();
+  } else {
+    player.playVideo();
+  }
+}
+
+/* Star Background logic unchanged */
 function createStar() {
   const star = document.createElement("div");
   star.className = "star";
@@ -256,12 +254,7 @@ const quizData = [
   },
   {
     q: "Babushankar’s cutest habit? 🥰",
-    options: [
-      "Being silent",
-      "Telling yes to everything I ask",
-      "Always smiling",
-      "Acting serious"
-    ],
+    options: ["Being silent", "Telling yes to everything I ask", "Always smiling", "Acting serious"],
     answer: "Telling yes to everything I ask"
   }
 ];
@@ -274,9 +267,7 @@ function loadQuiz() {
   const answersDiv = document.getElementById("answers");
 
   if (quizIndex >= quizData.length) {
-    cardPara.innerHTML =
-      `You scored ${score}/${quizData.length} 💖<br>
-       No matter the score, you already won my heart 🌌`;
+    cardPara.innerHTML = `You scored ${score}/${quizData.length} 💖<br>No matter the score, you already won my heart 🌌`;
     answersDiv.innerHTML = "";
     return;
   }
@@ -294,21 +285,19 @@ function loadQuiz() {
 }
 
 function checkAnswer(selected) {
-  const resultText = document.getElementById("quizResult");
   if (selected === quizData[quizIndex].answer) {
     score++;
-    resultText.innerText = "Correct 🥰";
+    document.getElementById("quizResult").innerText = "Correct 🥰";
   } else {
-    resultText.innerText = "Still loved 😘";
+    document.getElementById("quizResult").innerText = "Still loved 😘";
   }
   quizIndex++;
   setTimeout(() => {
-    resultText.innerText = "";
+    document.getElementById("quizResult").innerText = "";
     loadQuiz();
   }, 800);
 }
 
-// Initial quiz load
 loadQuiz();
 </script>
 
