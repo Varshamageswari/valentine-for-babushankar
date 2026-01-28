@@ -43,7 +43,6 @@ h1, h2 {
 .gallery img {
   width: 100%;
   border-radius: 20px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.2);
 }
 
 .star {
@@ -68,6 +67,7 @@ button {
   color: white;
   font-size: 17px;
   cursor: pointer;
+  margin: 8px;
 }
 
 button:hover {
@@ -89,15 +89,13 @@ input {
 
 <!-- Background Music -->
 <audio id="bgMusic" loop>
-  <source src="https://github.com/Varshamageswari/valentine-for-babushankar/blob/main/song.mp3" type="audio/mpeg">
+  <source src="https://raw.githubusercontent.com/Varshamageswari/valentine-for-babushankar/main/song.mp3" type="audio/mpeg">
 </audio>
 
 <section>
   <h1>🌌 Happy Valentine’s Day 🌌</h1>
   <h2>Babushankar</h2>
   <p>You are my calm in this universe</p>
-
-  <br>
   <button onclick="playMusic()">🎶 Play Our Song</button>
 </section>
 
@@ -107,8 +105,7 @@ input {
     <p>
       Hey Bava,<br><br>
       Among billions of stars, somehow my heart found you.
-      You didn’t come loudly into my life —
-      you came calmly, comfortably, softly.
+      You came calmly, comfortably, softly.
       And without realizing it,
       I loved you from the very first sight.
     </p>
@@ -118,16 +115,9 @@ input {
 <section>
   <div class="card">
     <h2>✨ Our Little Memories</h2>
-    <p><b>Feb 13</b> — Company gathering.<br>
+    <p><b>Feb 18</b> — Office gathering.<br>
     Green jacket. Dancing together.<br>
     My universe shifted.</p>
-
-    <p>Friendship → chats → calls → photos.</p>
-    <p>Metro waits. Office walks. Guindy talks.</p>
-
-    <p>I prayed to Lord Siva 🕉️</p>
-
-    <p><b>Oct 7</b> — <i>“I won’t be without you…”</i></p>
   </div>
 </section>
 
@@ -135,27 +125,34 @@ input {
   <div class="card">
     <h2>📸 Our Universe</h2>
     <div class="gallery">
-      <img src="photo1.jpg" alt="Us">
-      <img src="photo2.jpg" alt="Us">
+      <img src="photo1.jpg">
+      <img src="photo2.jpg">
     </div>
+  </div>
+</section>
+
+<!-- QUIZ SECTION -->
+<section>
+  <div class="card">
+    <h2>💖 How Well Do You Know Us?</h2>
+    <p id="question"></p>
+    <div id="answers"></div>
+    <p id="quizResult"></p>
   </div>
 </section>
 
 <section>
   <div class="card">
     <h2>🔐 A Secret Just for You</h2>
-    <p>Enter our code word 💖</p>
-
     <input id="password" placeholder="Our code word…">
     <br><br>
-
     <button onclick="unlockLove()">Unlock ✨</button>
     <p id="error" style="color:red;"></p>
 
     <p id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
       Babushankar ❤️<br><br>
-      I’m yours.<br>
-      You’re mine.<br>
+      I choose you.<br>
+      Every version of you.<br>
       Forever ♾️
     </p>
   </div>
@@ -166,6 +163,7 @@ function playMusic() {
   document.getElementById("bgMusic").play();
 }
 
+/* Stars */
 function createStar() {
   const star = document.createElement("div");
   star.className = "star";
@@ -176,6 +174,7 @@ function createStar() {
 }
 setInterval(createStar, 300);
 
+/* Secret */
 function unlockLove() {
   const pass = document.getElementById("password").value.toLowerCase();
   if (pass === "bava") {
@@ -185,7 +184,94 @@ function unlockLove() {
     document.getElementById("error").innerText = "Wrong code 💔";
   }
 }
+
+/* QUIZ LOGIC */
+const quizData = [
+  {
+    q: "Where did we first meet? 💫",
+    options: ["Office gathering", "Metro", "Online", "Party"],
+    answer: "Office gathering"
+  },
+  {
+    q: "When did it happen? 📅",
+    options: ["Feb 14", "Feb 18", "March 1", "Jan 26"],
+    answer: "Feb 18"
+  },
+  {
+    q: "Babushankar’s cutest habit? 🥰",
+    options: [
+      "Being silent",
+      "Telling yes to everything I ask",
+      "Always smiling",
+      "Acting serious"
+    ],
+    answer: "Telling yes to everything I ask"
+  }
+];
+
+let quizIndex = 0;
+let score = 0;
+
+function loadQuiz() {
+  if (quizIndex >= quizData.length) {
+    document.querySelector(".card h2 + p").innerHTML =
+      `You scored ${score}/${quizData.length} 💖<br>
+       No matter the score, you already won my heart 🌌`;
+    document.getElementById("answers").innerHTML = "";
+    return;
+  }
+
+  const q = quizData[quizIndex];
+  document.getElementById("question").innerText = q.q;
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(opt);
+    answersDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected) {
+  if (selected === quizData[quizIndex].answer) {
+    score++;
+    document.getElementById("quizResult").innerText = "Correct 🥰";
+  } else {
+    document.getElementById("quizResult").innerText = "Still loved 😘";
+  }
+  quizIndex++;
+  setTimeout(loadQuiz, 800);
+}
+
+loadQuiz();
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
