@@ -15,7 +15,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Fail-safe overlay */
 #overlay {
   position: fixed;
   top: 0; left: 0;
@@ -59,6 +58,24 @@ h1, h2 { color: #ffd6ff; }
   border-radius: 20px;
 }
 
+/* Toast Notification Styles */
+#toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 107, 214, 0.9);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(255, 107, 214, 0.5);
+  transition: bottom 0.5s ease-in-out;
+  z-index: 10000;
+}
+
+#toast.show { bottom: 30px; }
+
 .star {
   position: fixed;
   top: -10px;
@@ -83,18 +100,10 @@ button {
   font-size: 17px;
   cursor: pointer;
   margin: 8px;
-  transition: transform 0.2s, background 0.2s;
 }
 
-button:hover { background: #ff3dc5; transform: scale(1.05); }
-button:active { transform: scale(0.95); }
-
-/* Hidden YouTube Player */
-#youtube-player {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-}
+button:hover { background: #ff3dc5; }
+#youtube-player { position: absolute; top: -9999px; left: -9999px; }
 </style>
 </head>
 
@@ -105,6 +114,8 @@ button:active { transform: scale(0.95); }
   <p>Ready to see our story?</p>
   <button id="enterBtn" onclick="startExperience()">✨ Enter ✨</button>
 </div>
+
+<div id="toast">🎵 "I just wanna be yours..." ❤️</div>
 
 <div id="youtube-player"></div>
 
@@ -125,15 +136,6 @@ button:active { transform: scale(0.95); }
       And without realizing it,
       I loved you from the very first sight.
     </p>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <h2>✨ Our Little Memories</h2>
-    <p><b>Feb 18</b> — Office gathering.<br>
-    Green jacket. Dancing together.<br>
-    My universe shifted.</p>
   </div>
 </section>
 
@@ -163,7 +165,6 @@ button:active { transform: scale(0.95); }
     <br><br>
     <button onclick="unlockLove()">Unlock ✨</button>
     <p id="error" style="color:red;"></p>
-
     <p id="secretLove" style="display:none; font-size:20px; color:#ff9ee7;">
       Babushankar ❤️<br><br>
       I choose you.<br>
@@ -177,8 +178,9 @@ button:active { transform: scale(0.95); }
 
 <script>
 let player;
+let toastShown = false;
 
-// Initialize YouTube Player
+// YouTube Player Init
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube-player', {
     height: '0',
@@ -188,37 +190,58 @@ function onYouTubeIframeAPIReady() {
       'autoplay': 0,
       'loop': 1,
       'playlist': 'qyEzsAy4qeU'
-    },
-    events: {
-      'onReady': onPlayerReady
     }
   });
 }
 
-function onPlayerReady(event) {
-  console.log("YouTube Player is ready");
-}
-
 function startExperience() {
-  // 1. Instantly hide overlay
   document.getElementById("overlay").classList.add('hidden');
   
-  // 2. Play music if player is ready
-  if (player && player.playVideo) {
-    player.playVideo();
+  // Robust check for player initialization
+  const playInterval = setInterval(() => {
+    if (player && player.playVideo) {
+      player.playVideo();
+      clearInterval(playInterval);
+      // Start checking for chorus time
+      setInterval(checkChorusTime, 1000);
+    }
+  }, 100);
+}
+
+function checkChorusTime() {
+  if (player && player.getCurrentTime && !toastShown) {
+    const currentTime = player.getCurrentTime();
+    // Chorus starts roughly at 45 seconds
+    if (currentTime >= 45 && currentTime < 55) {
+      showToast();
+      toastShown = true;
+    }
   }
+}
+
+function showToast() {
+  const toast = document.getElementById("toast");
+  toast.classList.add("show");
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 5000);
 }
 
 function toggleMusic() {
-  const state = player.getPlayerState();
-  if (state === YT.PlayerState.PLAYING) {
-    player.pauseVideo();
+  // FIXED: Added safety check for getPlayerState
+  if (player && typeof player.getPlayerState === "function") {
+    const state = player.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+      player.pauseVideo();
+    } else {
+      player.playVideo();
+    }
   } else {
-    player.playVideo();
+    console.warn("Player not initialized yet.");
   }
 }
 
-/* Star Background logic unchanged */
+/* Background Stars logic */
 function createStar() {
   const star = document.createElement("div");
   star.className = "star";
@@ -240,23 +263,11 @@ function unlockLove() {
   }
 }
 
-/* QUIZ LOGIC */
+/* QUIZ LOGIC (Unchanged) */
 const quizData = [
-  {
-    q: "Where did we first meet? 💫",
-    options: ["Office gathering", "Metro", "Online", "Party"],
-    answer: "Office gathering"
-  },
-  {
-    q: "When did it happen? 📅",
-    options: ["Feb 14", "Feb 18", "March 1", "Jan 26"],
-    answer: "Feb 18"
-  },
-  {
-    q: "Babushankar’s cutest habit? 🥰",
-    options: ["Being silent", "Telling yes to everything I ask", "Always smiling", "Acting serious"],
-    answer: "Telling yes to everything I ask"
-  }
+  { q: "Where did we first meet? 💫", options: ["Office gathering", "Metro", "Online", "Party"], answer: "Office gathering" },
+  { q: "When did it happen? 📅", options: ["Feb 14", "Feb 18", "March 1", "Jan 26"], answer: "Feb 18" },
+  { q: "Babushankar’s cutest habit? 🥰", options: ["Being silent", "Telling yes to everything I ask", "Always smiling", "Acting serious"], answer: "Telling yes to everything I ask" }
 ];
 
 let quizIndex = 0;
@@ -265,17 +276,14 @@ let score = 0;
 function loadQuiz() {
   const cardPara = document.querySelector(".card h2 + p");
   const answersDiv = document.getElementById("answers");
-
   if (quizIndex >= quizData.length) {
     cardPara.innerHTML = `You scored ${score}/${quizData.length} 💖<br>No matter the score, you already won my heart 🌌`;
     answersDiv.innerHTML = "";
     return;
   }
-
   const q = quizData[quizIndex];
   document.getElementById("question").innerText = q.q;
   answersDiv.innerHTML = "";
-
   q.options.forEach(opt => {
     const btn = document.createElement("button");
     btn.innerText = opt;
@@ -285,17 +293,11 @@ function loadQuiz() {
 }
 
 function checkAnswer(selected) {
-  if (selected === quizData[quizIndex].answer) {
-    score++;
-    document.getElementById("quizResult").innerText = "Correct 🥰";
-  } else {
-    document.getElementById("quizResult").innerText = "Still loved 😘";
-  }
+  const res = document.getElementById("quizResult");
+  if (selected === quizData[quizIndex].answer) { score++; res.innerText = "Correct 🥰"; }
+  else { res.innerText = "Still loved 😘"; }
   quizIndex++;
-  setTimeout(() => {
-    document.getElementById("quizResult").innerText = "";
-    loadQuiz();
-  }, 800);
+  setTimeout(() => { res.innerText = ""; loadQuiz(); }, 800);
 }
 
 loadQuiz();
